@@ -1,5 +1,20 @@
 # Quantitative Trad Backend（A 股量化交易模拟系统后端）
 
+> 本项目由股市老韭菜闲暇时间开发，项目全程用 Claude + Codex 开发而成。本项目纯属对牢 A 深恶痛绝研究出来解解闷的。**切记入市有风险，投资需谨慎。**
+
+## 在线体验
+
+项目已经部署上线，不想下载的朋友可以直接访问线上地址体验：**http://8.140.28.207/**
+
+![AI 分析与 RAG 运行诊断中心](docs/ai-analysis-demo.png)
+
+## 相关仓库
+
+| 仓库 | 说明 |
+|------|------|
+| [quantitative-trad-backend](https://github.com/ppx-shrimp/quantitative-trad-backend)（本仓库） | 后端：FastAPI + SQLAlchemy + AkShare + AI/RAG |
+| [quantitative-trad-ui](https://github.com/ppx-shrimp/quantitative-trad-ui) | 前端：Vue 3 + TypeScript + ECharts，同花顺风格暗色终端 |
+
 Quantitative Trad Backend 是一个面向 A 股市场的量化交易模拟系统后端，提供股票基础数据、K 线同步、技术特征计算、股票池管理、模拟交易、回测、AI 交易分析、AI 观察池、RAG 新闻检索增强和系统任务记录等能力。项目基于 FastAPI、SQLAlchemy、AkShare、APScheduler、Redis、MySQL、Qdrant 以及 OpenAI-compatible LLM/Embedding 接口构建。
 
 本项目只做模拟交易和研究分析，不包含真实券商下单能力。默认配置中 `QUANT_ALLOW_LIVE_TRADING=false`，请不要将本项目直接用于真实资金交易。
