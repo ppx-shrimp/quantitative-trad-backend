@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.crt
+secrets.*
+
+# Runtime data
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/cache/
+.cache/
+logs/
+*.log
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Docker local overrides
+docker-compose.override.yml

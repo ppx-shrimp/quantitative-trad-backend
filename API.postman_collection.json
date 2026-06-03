@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "Quantitative Trad Backend API",
+    "description": "A 股量化交易模拟系统后端接口集合。导入 Postman 或 Apifox 后，将 baseUrl 设置为 http://localhost:8000/api/v1。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000/api/v1" },
+    { "key": "rootUrl", "value": "http://localhost:8000" },
+    { "key": "symbol", "value": "600519" },
+    { "key": "poolCode", "value": "favorites" },
+    { "key": "runId", "value": "replace_with_run_id" },
+    { "key": "analysisId", "value": "replace_with_analysis_id" },
+    { "key": "candidateId", "value": "replace_with_candidate_id" },
+    { "key": "executionId", "value": "replace_with_execution_id" }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{rootUrl}}/health" } },
+        { "name": "System Status", "request": { "method": "GET", "url": "{{baseUrl}}/system/status" } },
+        { "name": "System Health", "request": { "method": "GET", "url": "{{baseUrl}}/system/health" } },
+        { "name": "Task Executions", "request": { "method": "GET", "url": "{{baseUrl}}/system/tasks/executions?page=1&page_size=50" } },
+        { "name": "Latest Task Executions", "request": { "method": "GET", "url": "{{baseUrl}}/system/tasks/executions/latest?limit_per_task=1" } }
+      ]
+    },
+    {
+      "name": "Market & Dashboard",
+      "item": [
+        { "name": "Dashboard Snapshot", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/snapshot" } },
+        { "name": "Dashboard Prewarm", "request": { "method": "POST", "url": "{{baseUrl}}/dashboard/prewarm?async_mode=true" } },
+        { "name": "Market Indices", "request": { "method": "GET", "url": "{{baseUrl}}/market/indices" } },
+        { "name": "Hot Sectors", "request": { "method": "GET", "url": "{{baseUrl}}/market/hot-sectors?limit=8" } },
+        { "name": "Market Indices Diagnose", "request": { "method": "GET", "url": "{{baseUrl}}/market/indices/diagnose" } }
+      ]
+    },
+    {
+      "name": "Stocks & Klines",
+      "item": [
+        { "name": "List Stocks", "request": { "method": "GET", "url": "{{baseUrl}}/stocks?page=1&page_size=20" } },
+        { "name": "Analyze Stock", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/analysis" } },
+        { "name": "Stock Kline Remote Display", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/kline?period=daily" } },
+        { "name": "Stock Prediction", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/prediction" } },
+        { "name": "Sync Symbol Kline", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/stocks/{{symbol}}/klines/sync", "body": { "mode": "raw", "raw": "{\n  \"period\": \"daily\"\n}" } } },
+        { "name": "Local Klines", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/klines/local?period=daily&page=1&page_size=200" } },
+        { "name": "Kline Summary", "request": { "method": "GET", "url": "{{baseUrl}}/klines/summary?page=1&page_size=50" } }
+      ]
+    },
+    {
+      "name": "Pools & Features",
+      "item": [
+        { "name": "List Pools", "request": { "method": "GET", "url": "{{baseUrl}}/pools" } },
+        { "name": "List Pool Members", "request": { "method": "GET", "url": "{{baseUrl}}/pools/{{poolCode}}/stocks" } },
+        { "name": "Add Pool Member", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/pools/{{poolCode}}/stocks", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"name\": \"贵州茅台\",\n  \"reason\": \"示例自选股\",\n  \"tags\": [\"白酒\", \"蓝筹\"]\n}" } } },
+        { "name": "Update Pool Member", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/pools/{{poolCode}}/stocks/{{symbol}}", "body": { "mode": "raw", "raw": "{\n  \"reason\": \"更新备注\",\n  \"enabled\": true\n}" } } },
+        { "name": "Remove Pool Member", "request": { "method": "DELETE", "url": "{{baseUrl}}/pools/{{poolCode}}/stocks/{{symbol}}" } },
+        { "name": "Sync Pool Klines", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/pools/{{poolCode}}/klines/sync", "body": { "mode": "raw", "raw": "{\n  \"period\": \"daily\"\n}" } } },
+        { "name": "Compute Pool Features", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/pools/{{poolCode}}/features/compute", "body": { "mode": "raw", "raw": "{\n  \"period\": \"daily\"\n}" } } },
+        { "name": "Compute Symbol Features", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/stocks/{{symbol}}/features/compute", "body": { "mode": "raw", "raw": "{\n  \"period\": \"daily\"\n}" } } },
+        { "name": "Latest Feature", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/features/latest?period=daily" } },
+        { "name": "List Features", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/features?period=daily&page=1&page_size=100" } },
+        { "name": "Data Readiness", "request": { "method": "GET", "url": "{{baseUrl}}/data/readiness?symbol={{symbol}}" } }
+      ]
+    },
+    {
+      "name": "News",
+      "item": [
+        { "name": "Hot News", "request": { "method": "GET", "url": "{{baseUrl}}/news/hot" } },
+        { "name": "Latest News", "request": { "method": "GET", "url": "{{baseUrl}}/news/latest?page=1&page_size=20" } },
+        { "name": "Sync News", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/news/sync", "body": { "mode": "raw", "raw": "{\n  \"news_types\": [\"news\", \"notice\"],\n  \"limit\": 100,\n  \"force_refresh\": false\n}" } } },
+        { "name": "News Source Status", "request": { "method": "GET", "url": "{{baseUrl}}/news/sources/status" } },
+        { "name": "Invalidate News Cache", "request": { "method": "POST", "url": "{{baseUrl}}/news/cache/invalidate" } },
+        { "name": "Symbol News", "request": { "method": "GET", "url": "{{baseUrl}}/stocks/{{symbol}}/news?page=1&page_size=20" } }
+      ]
+    },
+    {
+      "name": "Trading",
+      "item": [
+        { "name": "Open Position", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/trading/open-position", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"quantity\": 100,\n  \"price\": 1500\n}" } } },
+        { "name": "Close Position", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/trading/close-position", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"quantity\": 100,\n  \"price\": 1520\n}" } } },
+        { "name": "Positions", "request": { "method": "GET", "url": "{{baseUrl}}/trading/positions" } },
+        { "name": "PnL", "request": { "method": "GET", "url": "{{baseUrl}}/trading/pnl" } },
+        { "name": "PnL Stats", "request": { "method": "GET", "url": "{{baseUrl}}/trading/pnl-stats" } },
+        { "name": "Strategy Evaluation", "request": { "method": "GET", "url": "{{baseUrl}}/trading/strategy-evaluation" } },
+        { "name": "Daily Report", "request": { "method": "GET", "url": "{{baseUrl}}/trading/daily-report" } },
+        { "name": "Account", "request": { "method": "GET", "url": "{{baseUrl}}/trading/account" } },
+        { "name": "Orders", "request": { "method": "GET", "url": "{{baseUrl}}/trading/orders?page=1&page_size=50" } },
+        { "name": "Cash Flows", "request": { "method": "GET", "url": "{{baseUrl}}/trading/cash-flows?page=1&page_size=50" } },
+        { "name": "Reset Account", "request": { "method": "POST", "url": "{{baseUrl}}/trading/reset" } },
+        { "name": "Auto Buy", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/trading/auto-buy", "body": { "mode": "raw", "raw": "{\n  \"pools\": [\"favorites\"],\n  \"strategy_mode\": \"normal\"\n}" } } },
+        { "name": "Auto Close", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/trading/auto-close", "body": { "mode": "raw", "raw": "{\n  \"mode\": \"manual\",\n  \"scheduled\": false\n}" } } }
+      ]
+    },
+    {
+      "name": "Backtest",
+      "item": [
+        { "name": "Run Backtest", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/backtest/run", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"period\": \"daily\",\n  \"strategy_mode\": \"normal\",\n  \"initial_cash\": 1000000,\n  \"quantity\": 100\n}" } } },
+        { "name": "Grid Optimize", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/backtest/grid-optimize", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"period\": \"daily\"\n}" } } },
+        { "name": "Strategy Compare", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/backtest/strategy-compare", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"period\": \"daily\",\n  \"strategies\": [\"strict\", \"normal\", \"loose\"]\n}" } } },
+        { "name": "Backtest Runs", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/runs?page=1&page_size=20" } },
+        { "name": "Compare Runs", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/compare?symbol={{symbol}}" } },
+        { "name": "Leaderboard", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/leaderboard?limit=20" } },
+        { "name": "Backtest Report", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/runs/{{runId}}/report" } },
+        { "name": "Export Backtest Report", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/runs/{{runId}}/report/export?format=markdown" } },
+        { "name": "Backtest Run Detail", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/runs/{{runId}}" } },
+        { "name": "Backtest Cache Status", "request": { "method": "GET", "url": "{{baseUrl}}/backtest/cache/status" } },
+        { "name": "Invalidate Backtest Cache", "request": { "method": "POST", "url": "{{baseUrl}}/backtest/cache/invalidate" } }
+      ]
+    },
+    {
+      "name": "AI & RAG",
+      "item": [
+        { "name": "LLM Status", "request": { "method": "GET", "url": "{{baseUrl}}/ai/llm/status" } },
+        { "name": "LLM Diagnose", "request": { "method": "POST", "url": "{{baseUrl}}/ai/llm/diagnose" } },
+        { "name": "AI Runtime Status", "request": { "method": "GET", "url": "{{baseUrl}}/ai/runtime/status" } },
+        { "name": "Analyze Stock With AI", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/analyze-stock", "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"600519\",\n  \"analysis_type\": \"trade_decision\",\n  \"user_question\": \"现在适合买入吗？\"\n}" } } },
+        { "name": "AI Recommendations", "request": { "method": "GET", "url": "{{baseUrl}}/ai/recommendations?pool_code=favorites&limit=5&period=daily" } },
+        { "name": "Observation Scan", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/observations/scan", "body": { "mode": "raw", "raw": "{\n  \"pool_code\": \"favorites\",\n  \"limit\": 10,\n  \"period\": \"daily\",\n  \"run_deep_analysis\": false\n}" } } },
+        { "name": "List Observations", "request": { "method": "GET", "url": "{{baseUrl}}/ai/observations?status=active&limit=50" } },
+        { "name": "Track Observations", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/observations/track", "body": { "mode": "raw", "raw": "{\n  \"limit\": 50\n}" } } },
+        { "name": "Update Observation", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/observations/{{candidateId}}", "body": { "mode": "raw", "raw": "{\n  \"status\": \"watching\",\n  \"note\": \"人工备注\"\n}" } } },
+        { "name": "Reanalyze Observation", "request": { "method": "POST", "url": "{{baseUrl}}/ai/observations/{{candidateId}}/reanalyze" } },
+        { "name": "Dify Advice", "request": { "method": "GET", "url": "{{baseUrl}}/ai/observations/dify-advice" } },
+        { "name": "AI Analysis Records", "request": { "method": "GET", "url": "{{baseUrl}}/ai/analysis-records?limit=20&include_payload=false" } },
+        { "name": "AI Analysis Evaluations", "request": { "method": "GET", "url": "{{baseUrl}}/ai/analysis-evaluations?limit=50&mode=live" } },
+        { "name": "AI Evaluation Detail", "request": { "method": "GET", "url": "{{baseUrl}}/ai/analysis-evaluations/{{analysisId}}" } },
+        { "name": "Create Chat", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/chat/create", "body": { "mode": "raw", "raw": "{\n  \"analysis_id\": \"{{analysisId}}\"\n}" } } },
+        { "name": "Send Chat Message", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/ai/chat/send", "body": { "mode": "raw", "raw": "{\n  \"session_id\": \"replace_with_session_id\",\n  \"message\": \"请解释这次分析的主要风险\"\n}" } } },
+        { "name": "Chat Messages", "request": { "method": "GET", "url": "{{baseUrl}}/ai/chat/messages?session_id=replace_with_session_id" } },
+        { "name": "RAG Status", "request": { "method": "GET", "url": "{{baseUrl}}/rag/status" } },
+        { "name": "Ensure RAG Collection", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/collections/ensure", "body": { "mode": "raw", "raw": "{\n  \"force_recreate\": false\n}" } } },
+        { "name": "Chunk News", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/news/chunk", "body": { "mode": "raw", "raw": "{\n  \"limit\": 50,\n  \"force_rechunk\": false\n}" } } },
+        { "name": "Chunk Stats", "request": { "method": "GET", "url": "{{baseUrl}}/rag/news/chunks/stats" } },
+        { "name": "List Chunks", "request": { "method": "GET", "url": "{{baseUrl}}/rag/news/chunks?page=1&page_size=20" } },
+        { "name": "Embed News", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/news/embed", "body": { "mode": "raw", "raw": "{\n  \"limit\": 50,\n  \"force_reembed\": false\n}" } } },
+        { "name": "Search News Chunks", "request": { "method": "GET", "url": "{{baseUrl}}/rag/news/search?query=新能源&limit=5" } },
+        { "name": "Build RAG Context", "request": { "method": "GET", "url": "{{baseUrl}}/rag/news/context?query=新能源&limit=5" } },
+        { "name": "Run RAG Pipeline", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/news/pipeline/run", "body": { "mode": "raw", "raw": "{\n  \"limit\": 100,\n  \"force_rechunk\": false,\n  \"force_reembed\": false,\n  \"ensure_collection\": true,\n  \"run_embedding\": true\n}" } } },
+        { "name": "Run RAG Pipeline Task", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/news/pipeline/tasks", "body": { "mode": "raw", "raw": "{\n  \"limit\": 100,\n  \"force_rechunk\": false,\n  \"force_reembed\": false,\n  \"ensure_collection\": true,\n  \"run_embedding\": true\n}" } } },
+        { "name": "RAG Pipeline Task Status", "request": { "method": "GET", "url": "{{baseUrl}}/rag/news/pipeline/tasks/{{executionId}}" } },
+        { "name": "RAG Debug Upsert", "request": { "method": "POST", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/rag/debug/upsert", "body": { "mode": "raw", "raw": "{\n  \"text\": \"测试文本\",\n  \"metadata\": {\"source\": \"postman\"}\n}" } } },
+        { "name": "RAG Debug Search", "request": { "method": "GET", "url": "{{baseUrl}}/rag/debug/search?query=测试&limit=8" } }
+      ]
+    },
+    {
+      "name": "Alerts",
+      "item": [
+        { "name": "List Alert Todos", "request": { "method": "GET", "url": "{{baseUrl}}/alerts/todos?limit_ai_records=100" } },
+        { "name": "Update Alert Todo", "request": { "method": "PATCH", "header": [{"key":"Content-Type","value":"application/json"}], "url": "{{baseUrl}}/alerts/todos/replace_with_todo_id", "body": { "mode": "raw", "raw": "{\n  \"status\": \"acknowledged\",\n  \"note\": \"已处理\"\n}" } } }
+      ]
+    }
+  ]
+}

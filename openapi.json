@@ -1,0 +1,63 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Quantitative Trad Backend API",
+    "version": "0.1.0",
+    "description": "A 股量化交易模拟系统后端 API。运行服务后可访问 /openapi.json 获取 FastAPI 自动生成的完整实时文档。"
+  },
+  "servers": [
+    { "url": "http://localhost:8000/api/v1", "description": "Local API v1" }
+  ],
+  "tags": [
+    { "name": "System" },
+    { "name": "Market" },
+    { "name": "Stocks" },
+    { "name": "Pools" },
+    { "name": "News" },
+    { "name": "Trading" },
+    { "name": "Backtest" },
+    { "name": "AI" },
+    { "name": "RAG" },
+    { "name": "Alerts" }
+  ],
+  "paths": {
+    "/rag/status": { "get": { "tags": ["RAG"], "summary": "RAG 状态", "responses": { "200": { "description": "OK" } } } },
+    "/rag/collections/ensure": { "post": { "tags": ["RAG"], "summary": "初始化或重建 Qdrant collection", "requestBody": { "content": { "application/json": { "example": { "force_recreate": false } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/chunk": { "post": { "tags": ["RAG"], "summary": "新闻 chunk 化", "requestBody": { "content": { "application/json": { "example": { "limit": 50, "force_rechunk": false } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/chunks/stats": { "get": { "tags": ["RAG"], "summary": "新闻 chunk 统计", "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/chunks": { "get": { "tags": ["RAG"], "summary": "新闻 chunk 分页", "parameters": [{"name":"page","in":"query","schema":{"type":"integer","default":1}}, {"name":"page_size","in":"query","schema":{"type":"integer","default":20}}, {"name":"embedded","in":"query","schema":{"type":"boolean"}}], "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/embed": { "post": { "tags": ["RAG"], "summary": "新闻 chunk 向量化", "requestBody": { "content": { "application/json": { "example": { "limit": 50, "force_reembed": false } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/search": { "get": { "tags": ["RAG"], "summary": "RAG 新闻语义搜索", "parameters": [{"name":"query","in":"query","required":true,"schema":{"type":"string"}}, {"name":"limit","in":"query","schema":{"type":"integer","default":8}}], "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/context": { "get": { "tags": ["RAG"], "summary": "构造 RAG 上下文", "parameters": [{"name":"query","in":"query","required":true,"schema":{"type":"string"}}, {"name":"limit","in":"query","schema":{"type":"integer","default":5}}], "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/pipeline/run": { "post": { "tags": ["RAG"], "summary": "同步执行一键 RAG 预处理", "requestBody": { "content": { "application/json": { "example": { "limit": 100, "force_rechunk": false, "force_reembed": false, "ensure_collection": true, "run_embedding": true } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/pipeline/tasks": { "post": { "tags": ["RAG"], "summary": "创建后台 RAG 预处理任务", "requestBody": { "content": { "application/json": { "example": { "limit": 100, "force_rechunk": false, "force_reembed": false, "ensure_collection": true, "run_embedding": true } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/rag/news/pipeline/tasks/{execution_id}": { "get": { "tags": ["RAG"], "summary": "查询 RAG 预处理任务状态", "parameters": [{"name":"execution_id","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "OK" } } } },
+    "/ai/llm/status": { "get": { "tags": ["AI"], "summary": "LLM 状态", "responses": { "200": { "description": "OK" } } } },
+    "/ai/llm/diagnose": { "post": { "tags": ["AI"], "summary": "LLM 诊断", "responses": { "200": { "description": "OK" } } } },
+    "/ai/runtime/status": { "get": { "tags": ["AI"], "summary": "AI/RAG 运行诊断", "responses": { "200": { "description": "OK" } } } },
+    "/ai/analyze-stock": { "post": { "tags": ["AI"], "summary": "AI 个股分析", "requestBody": { "content": { "application/json": { "example": { "symbol": "600519", "analysis_type": "trade_decision", "user_question": "现在适合买入吗？" } } } }, "responses": { "200": { "description": "OK" } } } },
+    "/ai/recommendations": { "get": { "tags": ["AI"], "summary": "AI 股票推荐", "parameters": [{"name":"pool_code","in":"query","schema":{"type":"string","default":"favorites"}}, {"name":"limit","in":"query","schema":{"type":"integer","default":5}}], "responses": { "200": { "description": "OK" } } } },
+    "/ai/observations/scan": { "post": { "tags": ["AI"], "summary": "AI 观察池扫描", "responses": { "200": { "description": "OK" } } } },
+    "/ai/observations": { "get": { "tags": ["AI"], "summary": "AI 观察池列表", "responses": { "200": { "description": "OK" } } } },
+    "/ai/analysis-records": { "get": { "tags": ["AI"], "summary": "AI 分析记录", "parameters": [{"name":"symbol","in":"query","schema":{"type":"string"}}, {"name":"include_payload","in":"query","schema":{"type":"boolean","default":false}}], "responses": { "200": { "description": "OK" } } } },
+    "/stocks": { "get": { "tags": ["Stocks"], "summary": "股票列表", "responses": { "200": { "description": "OK" } } } },
+    "/stocks/{symbol}/analysis": { "get": { "tags": ["Stocks"], "summary": "个股技术分析", "parameters": [{"name":"symbol","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "OK" } } } },
+    "/stocks/{symbol}/prediction": { "get": { "tags": ["Stocks"], "summary": "个股预测", "parameters": [{"name":"symbol","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "OK" } } } },
+    "/stocks/{symbol}/klines/local": { "get": { "tags": ["Stocks"], "summary": "本地 K 线", "parameters": [{"name":"symbol","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "OK" } } } },
+    "/pools": { "get": { "tags": ["Pools"], "summary": "股票池列表", "responses": { "200": { "description": "OK" } } } },
+    "/pools/{pool_code}/stocks": { "get": { "tags": ["Pools"], "summary": "股票池成员", "responses": { "200": { "description": "OK" } } }, "post": { "tags": ["Pools"], "summary": "添加股票池成员", "responses": { "200": { "description": "OK" } } } },
+    "/news/hot": { "get": { "tags": ["News"], "summary": "热点新闻", "responses": { "200": { "description": "OK" } } } },
+    "/news/latest": { "get": { "tags": ["News"], "summary": "最新新闻", "responses": { "200": { "description": "OK" } } } },
+    "/news/sync": { "post": { "tags": ["News"], "summary": "同步新闻", "responses": { "200": { "description": "OK" } } } },
+    "/trading/account": { "get": { "tags": ["Trading"], "summary": "模拟账户", "responses": { "200": { "description": "OK" } } } },
+    "/trading/open-position": { "post": { "tags": ["Trading"], "summary": "模拟开仓", "responses": { "200": { "description": "OK" } } } },
+    "/trading/close-position": { "post": { "tags": ["Trading"], "summary": "模拟平仓", "responses": { "200": { "description": "OK" } } } },
+    "/trading/positions": { "get": { "tags": ["Trading"], "summary": "持仓列表", "responses": { "200": { "description": "OK" } } } },
+    "/trading/orders": { "get": { "tags": ["Trading"], "summary": "订单列表", "responses": { "200": { "description": "OK" } } } },
+    "/backtest/run": { "post": { "tags": ["Backtest"], "summary": "运行回测", "responses": { "200": { "description": "OK" } } } },
+    "/backtest/grid-optimize": { "post": { "tags": ["Backtest"], "summary": "参数网格优化", "responses": { "200": { "description": "OK" } } } },
+    "/backtest/strategy-compare": { "post": { "tags": ["Backtest"], "summary": "策略对比", "responses": { "200": { "description": "OK" } } } },
+    "/backtest/runs": { "get": { "tags": ["Backtest"], "summary": "回测记录", "responses": { "200": { "description": "OK" } } } },
+    "/alerts/todos": { "get": { "tags": ["Alerts"], "summary": "风控待办", "responses": { "200": { "description": "OK" } } } }
+  }
+}
